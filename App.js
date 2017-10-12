@@ -13,7 +13,9 @@ export default class App extends React.Component {
                   clue: '',
                   gameOver: false,
                   level: 1,
-                  rangeEnd: 5};
+                  rangeEnd: 5,
+                  guesses: 0
+                  };
 
   }
 
@@ -50,6 +52,7 @@ export default class App extends React.Component {
   handleClick() {
     console.log(this.state.guess)
     console.log(this.state.targetNumber)
+    this.setState({guesses: this.state.guesses + 1})
     if (Number.parseInt(this.state.guess) > Number.parseInt(this.state.targetNumber)) {
       this.setState({clue: "..."})
       setTimeout(() => { this.setState({clue: "TOO HIGH"})}, 200);
@@ -84,40 +87,72 @@ export default class App extends React.Component {
 
     console.log('render called');
     return (
-      <View style={{
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
-        <View style={{width: '100%', height: 25, backgroundColor: 'powderblue'}} />
-        <View>
-          <Text style={styles.title}>NUMBER GUESSER</Text>
+
+      <View style={styles.container}>
+        <View style={{
+          flexDirection: 'column',
+          justifyContent: 'space-around',
+          backgroundColor: 'steelblue',
+          height: '70%'
+        }}>
+          <View style={{
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+          }}>
+            <View style={{width: '100%', height: 50, backgroundColor: 'steelblue',
+                          justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={[styles.title, styles.thefont]}>NUMBER GUESSER</Text>
+            </View>
+          </View>
+
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            height: '40%', 
+            alignItems: 'center'
+          }}>
+            <View style={{width: '33%', height: 50, 
+                          justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={[styles.rangeValue, styles.thefont]}>1</Text>   
+            </View>       
+            <TextInput
+              style={styles.guessBox}
+              keyboardType="numeric"
+              returnKeyType="done"
+              onChangeText={(guess) => this.setState({guess}) }
+              onSubmitEditing={ () => this.handleClick() }
+            />
+            <View style={{width: '33%', height: 50,
+                          justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={[styles.rangeValue, styles.thefont]}>{this.state.rangeEnd}</Text>   
+            </View> 
+          </View>
         </View>
 
-        <TextInput
-          style={styles.guessBox}
-          placeholder="Enter guess"
-          keyboardType="numeric"
-          returnKeyType="done"
-          onChangeText={(guess) => this.setState({guess}) }
-          onSubmitEditing={ () => this.handleClick() }
-        />
 
-        <Text style={styles.clue}>{this.state.clue}</Text>
+        <View style={{
+          flexDirection: 'column',
+          justifyContent: 'center', 
+          alignItems: 'center'
+        }}>
+          <Text style={[styles.clue, styles.thefont]}>{this.state.clue}</Text>
+        </View>
+
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        }}>    
+          <View style={{width: '40%', height: 100}}>
+            <Text style={[styles.dataValue, styles.thefont]}>{this.state.level}</Text>
+            <Text style={[styles.dataLabel, styles.thefont]}>LEVEL</Text>
+          </View>
+          <View style={{width: '40%', height: 120}}>
+            <Text style={[styles.dataValue, styles.thefont]}>{this.state.guesses}</Text>
+            <Text style={[styles.dataLabel, styles.thefont]}>GUESSES</Text>
+          </View>
         
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{flexDirection: 'column', alignItems: 'center'}}>
-            <Text style={styles.dataLabel}>LEVEL</Text>
-            <Text style={styles.dataValue}>{this.state.level}</Text>
-          </View>
-          <View style={{flexDirection: 'column', alignItems: 'center'}}>
-            <Text style={styles.dataLabel}>RANGE</Text>
-            <Text style={styles.dataValue}>1-{this.state.rangeEnd}</Text>
-          </View>
         </View>
-        <View>
-          {this.showPlayAgain()}
-        </View>
+        
       </View>
     );
   }
@@ -126,45 +161,56 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ded',
-    alignItems: 'center',
-    justifyContent: 'center'
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    backgroundColor: '#fafafd'
+  },
+
+  thefont: {
+    fontFamily: 'Roboto' 
   },
 
   title: {
-    color: 'steelblue',
-    fontWeight: 'bold',
+    color: 'white',
     fontSize: 30,
   },
 
   dataLabel: {
-    color: 'steelblue',
-    fontSize: 20,
+    color: '#aaa',
+    fontSize: 16,
     width: 100,
-    height: 30
+    height: 20,
+    fontWeight: 'bold'
+  },
+
+  rangeValue: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: 'white'
   },
 
   guessBox: {
     width: 100,
     height: 60,
+    fontSize: 40,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
-
+    color: 'white'
   },
 
   dataValue: {
     color: '#14143D',
-    fontSize: 40,
-    fontWeight: 'bold',
+    fontSize: 30,
     width: 100,
-    height: 100
+    height: 35
   },
 
   clue: {
-    color: '#A04141',
+    color: 'steelblue',
     fontSize: 30,
+    fontWeight: 'bold',
     width: 150,
     height: 100
   }
